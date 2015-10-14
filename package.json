@@ -1,0 +1,11 @@
+{
+  "name": "valuto-api-demo",
+  "version": "0.0.1",
+  "dependencies": {
+    "body-parser": "^1.14.1",
+    "express": "^4.13.3",
+    "node-rsa": "^0.2.25",
+    "q": "^1.4.1",
+    "request": "^2.65.0"
+  }
+}
