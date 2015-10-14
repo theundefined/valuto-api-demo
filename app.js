@@ -1,3 +1,4 @@
+/*jshint node: true, esnext: true*/
 'use strict';
 
 const url = require('url');
@@ -9,6 +10,7 @@ const Q = require('q');
 
 const app = express();
 const requestq = Q.nfbind(request.defaults({timeout: 5000}));
+const log = (log) => console.log(`${new Date().toISOString()} | ${log}`);
 
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.json());
@@ -26,6 +28,7 @@ app.post('/api/', (req, res) => {
   const data = `${urlObject.hostname}\n${urlObject.path}\n${body || ''}`;
   const signature = key.sign(data, 'base64', 'utf8');
 
+  log(`API REQUEST: ${urlObject.href}`);
   requestq({
     method,
     uri: urlObject.href,
@@ -41,7 +44,9 @@ app.post('/api/', (req, res) => {
 });
 
 const server = app.listen(3000, () => {
-  const host = server.address().address;
+  const host = server.address().family === 'IPv6'
+    ? `[${server.address().address}]`
+    : server.address().address;
   const port = server.address().port;
-  console.log(`Valuto.com API DEMO listening at http://${host}:${port}`);
+  log(`Valuto.com API DEMO listening at http://${host}:${port}`);
 });
