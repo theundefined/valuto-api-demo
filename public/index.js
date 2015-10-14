@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('demo-app', [])
-  .controller('DemoAppCtrl', function ($scope, $http) {
+  .controller('DemoAppCtrl', function ($scope, $http, $q) {
 
     $scope.data = {
       api_url: 'https://api.valuto.com',
@@ -35,6 +35,28 @@ angular.module('demo-app', [])
 
     $scope.submitPayment = function() {
       send('/api', {method: 'POST', uri: '/payment', body: $scope.payment});
+    };
+
+    $scope.fetch = {
+      next_id: undefined,
+      response: '',
+      timeout: /*Promise*/undefined,
+      in_progress: false
+    };
+
+    $scope.startFetching = function() {
+      if ($scope.fetch.in_progress) return;
+      $scope.fetch.in_progress = true;
+      $scope.fetch.timeout = $q.defer().then(function() {$scope.fetch.in_progress = false});
+      $scope.fetch.response = '';
+      while ($scope.fetch.in_progress) {
+        // TODO: fetch data from server and append
+        // TODO: use timeout promise to abort fetching
+      }
+    };
+
+    $scope.stopFetching = function() {
+      $scope.fetch.timeout && $scope.fetch.timeout.resolve();
     };
 
     function send(url, data) {

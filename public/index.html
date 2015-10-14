@@ -46,6 +46,15 @@
     <button type="submit" class="btn btn-primary">Payment</button>
   </form>
 
+  <form>
+    <label for="next_id">Fetch NEXT_ID (optional)</label>
+    <input type="text" class="form-control" id="next_id" ng-model="fetch.next_id">
+
+    <pre>{{fetch.response | json}}</pre>
+    <button type="button" class="btn btn-primary" ng-click="startFetching()" ng-hide="fetch.in_progress">Start</button>
+    <button type="button" class="btn btn-primary" ng-click="stopFetching()" ng-show="fetch.in_progress">Stop</button>
+  </form>
+
 
 </div>
 <!-- /.container -->
