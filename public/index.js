@@ -49,7 +49,7 @@ angular.module('demo-app', ['LocalStorageModule'])
 
     $scope.startFetching = function() {
       if ($scope.fetch.in_progress) return;
-      $scope.fetch.status = "Penging...";
+      $scope.fetch.status = "Pending...";
       $scope.fetch.in_progress = true;
       $scope.fetch.timeoutDefer = $q.defer();
       $scope.fetch.timeout = $scope.fetch.timeoutDefer.promise;
