@@ -17,9 +17,60 @@
 <div class="container" ng-controller="DemoAppCtrl">
   <h1>Valuto.com API DEMO</h1>
 
+  <form novalidate>
+    <div class="form-group">
+      <label for="broker_id">Broker ID</label>
+      <input type="text" class="form-control" id="broker_id" name="broker_id" ng-model="data.broker_id"
+             ng-blur="store.set('broker_id', data.broker_id)" required>
+    </div>
+    <div class="form-group">
+      <label for="registration_url">Valuto.com registration address</label>
+      <input type="text" class="form-control" id="registration_url" name="registration_url"
+             ng-model="registration.url" ng-blur="store.set('registration_url', registration.url)" required="">
+    </div>
+    <div class="form-group">
+      <label for="firstname">First name</label>
+      <input type="text" class="form-control" id="firstname" name="firstname"
+             ng-model="registration.firstname" ng-blur="store.set('firstname', registration.firstname)" required="">
+    </div>
+    <div class="form-group">
+      <label for="lastname">First name</label>
+      <input type="text" class="form-control" id="lastname" name="lastname"
+             ng-model="registration.lastname" ng-blur="store.set('lastname', registration.lastname)" required="">
+    </div>
+    <div class="form-group">
+      <label for="company">Last name</label>
+      <input type="text" class="form-control" id="company" name="company"
+             ng-model="registration.company" ng-blur="store.set('company', registration.company)" required="">
+    </div>
+    <div class="form-group">
+      <label for="email">E-mail</label>
+      <input type="text" class="form-control" id="email" name="email"
+             ng-model="registration.email" ng-blur="store.set('email', registration.email)" required="">
+    </div>
+    <div class="form-group">
+      <label for="tax_id">Tax ID</label>
+      <input type="text" class="form-control" id="tax_id" name="tax_id"
+             ng-model="registration.tax_id" ng-blur="store.set('tax_id', registration.tax_id)" required="">
+    </div>
+    <div class="form-group">
+      <label for="phone">Phone</label>
+      <input type="text" class="form-control" id="phone" name="phone"
+             ng-model="registration.phone" ng-blur="store.set('phone', registration.phone)" required="">
+    </div>
+    <div class="form-group">
+      <label for="region">Region</label>
+      <input type="text" class="form-control" id="region" name="region"
+             ng-model="registration.region" ng-blur="store.set('region', registration.region)" required="">
+    </div>
+    <a href="{{registration.redirectUrl()}}" target="_blank" type="submit" class="btn btn-primary">
+      Submit registration
+    </a>
+  </form>
+
   <form ng-submit="submitPing()" novalidate>
     <div class="form-group">
-      <label for="api_url">Valuto.com server address</label>
+      <label for="api_url">Valuto.com API server address</label>
       <input type="text" class="form-control" id="api_url" name="api_url" ng-model="data.api_url"
              ng-blur="store.set('api_url', data.api_url)" required="">
     </div>
@@ -31,11 +82,6 @@
       <label for="priv-key">RSA Private key</label>
       <textarea class="form-control" id="priv-key" ng-model="data.priv_key"
                 placeholder="RSA PRIVATE KEY goes here..." required="" ng-blur="store.set('priv_key', data.priv_key)"></textarea>
-    </div>
-    <div class="form-group">
-      <label for="broker_id">Broker ID</label>
-      <input type="text" class="form-control" id="broker_id" name="broker_id" ng-model="data.broker_id"
-             ng-blur="store.set('broker_id', data.broker_id)" required>
     </div>
     <button type="submit" class="btn btn-primary">Verify signature</button>
   </form>
