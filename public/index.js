@@ -19,7 +19,7 @@ angular.module('demo-app', ['LocalStorageModule'])
       email: $scope.store.get('email') || 'tester+api1@c1.org.pl',
       tax_id: $scope.store.get('tax_id') || '7792200000',
       phone: $scope.store.get('phone') || '+48508620221',
-      region: $scope.store.get('pl') || 'pl',
+      region: $scope.store.get('region') || 'pl',
       redirectUrl: function() {
         return ['firstname', 'lastname', 'company', 'email', 'tax_id', 'phone', 'region'].reduce(
           function(url, key) {
