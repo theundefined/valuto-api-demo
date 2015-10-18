@@ -15,97 +15,108 @@
 <body ng-app="demo-app">
 
 <div class="container" ng-controller="DemoAppCtrl">
-  <h1>Valuto.com API DEMO</h1>
+  <h1>
+    Valuto.com API DEMO
+    <button class="btn btn-danger" ng-click="resetAndReload()">Reset forms to default and reload</button>
+  </h1>
+
+  <h3>Basic data</h3>
 
   <form novalidate>
-    <div class="form-group">
-      <label for="broker_id">Broker ID</label>
-      <input type="text" class="form-control" id="broker_id" name="broker_id" ng-model="data.broker_id"
-             ng-blur="store.set('broker_id', data.broker_id)" required>
-    </div>
-    <div class="form-group">
-      <label for="registration_url">Valuto.com registration address</label>
-      <input type="text" class="form-control" id="registration_url" name="registration_url"
-             ng-model="registration.url" ng-blur="store.set('registration_url', registration.url)" required="">
-    </div>
-    <div class="form-group">
-      <label for="firstname">First name</label>
-      <input type="text" class="form-control" id="firstname" name="firstname"
-             ng-model="registration.firstname" ng-blur="store.set('firstname', registration.firstname)" required="">
-    </div>
-    <div class="form-group">
-      <label for="lastname">First name</label>
-      <input type="text" class="form-control" id="lastname" name="lastname"
-             ng-model="registration.lastname" ng-blur="store.set('lastname', registration.lastname)" required="">
-    </div>
-    <div class="form-group">
-      <label for="company">Last name</label>
-      <input type="text" class="form-control" id="company" name="company"
-             ng-model="registration.company" ng-blur="store.set('company', registration.company)" required="">
-    </div>
-    <div class="form-group">
-      <label for="email">E-mail</label>
-      <input type="text" class="form-control" id="email" name="email"
-             ng-model="registration.email" ng-blur="store.set('email', registration.email)" required="">
-    </div>
-    <div class="form-group">
-      <label for="tax_id">Tax ID</label>
-      <input type="text" class="form-control" id="tax_id" name="tax_id"
-             ng-model="registration.tax_id" ng-blur="store.set('tax_id', registration.tax_id)" required="">
-    </div>
-    <div class="form-group">
-      <label for="phone">Phone</label>
-      <input type="text" class="form-control" id="phone" name="phone"
-             ng-model="registration.phone" ng-blur="store.set('phone', registration.phone)" required="">
-    </div>
-    <div class="form-group">
-      <label for="region">Region</label>
-      <input type="text" class="form-control" id="region" name="region"
-             ng-model="registration.region" ng-blur="store.set('region', registration.region)" required="">
-    </div>
-    <a href="{{registration.redirectUrl()}}" target="_blank" type="submit" class="btn btn-primary">
-      Submit registration
-    </a>
-  </form>
 
-  <form ng-submit="submitPing()" novalidate>
     <div class="form-group">
       <label for="api_url">Valuto.com API server address</label>
-      <input type="text" class="form-control" id="api_url" name="api_url" ng-model="data.api_url"
-             ng-blur="store.set('api_url', data.api_url)" required="">
+      <input type="text" class="form-control" id="api_url" name="api_url" ng-model="data.api_url" required="">
     </div>
-    <button type="submit" class="btn btn-primary">PING</button>
-  </form>
 
-  <form ng-submit="submitVerify()">
+    <div class="form-group">
+      <label for="broker_id">Broker ID</label>
+      <input type="text" class="form-control" id="broker_id" name="broker_id" ng-model="data.broker_id" required>
+    </div>
+
     <div class="form-group">
       <label for="priv-key">RSA Private key</label>
-      <textarea class="form-control" id="priv-key" ng-model="data.priv_key"
-                placeholder="RSA PRIVATE KEY goes here..." required="" ng-blur="store.set('priv_key', data.priv_key)"></textarea>
+    <textarea class="form-control" id="priv-key" ng-model="data.priv_key"
+              placeholder="RSA PRIVATE KEY goes here..." required=""></textarea>
     </div>
-    <button type="submit" class="btn btn-primary">Verify signature</button>
+
+    <button class="btn btn-primary" ng-click="submitPing()">PING</button>
+    <button class="btn btn-primary" ng-click="submitVerify()">Verify signature</button>
+    <button ng-hide="showOperations" class="btn btn-info" ng-click="showOperations = true">Show operations</button>
   </form>
 
-  <form ng-submit="submitPayment()">
-    <label for="payment">Payment</label>
-    <textarea class="form-control" id="payment" rows="15" ng-model="payment"
-              ng-blur="store.set('payment', payment)" required>
+  <div ng-show="showOperations">
 
-    </textarea>
-    <button type="submit" class="btn btn-primary">Payment</button>
-  </form>
+    <h3>Registration</h3>
 
-  <form>
-    <label for="next_id">Fetch NEXT_ID (optional)</label>
-    <input type="text" class="form-control" id="next_id" ng-model="fetch.next_id"
-           ng-blur="store.set('next_id', fetch.next_id)">
+    <form novalidate>
+      <div class="form-group">
+        <label for="registration_url">Valuto.com registration address</label>
+        <input type="text" class="form-control" id="registration_url" name="registration_url"
+               ng-model="registration.url" required="">
+      </div>
+      <div class="form-group">
+        <label for="firstname">First name</label>
+        <input type="text" class="form-control" id="firstname" name="firstname"
+               ng-model="registration.firstname" required="">
+      </div>
+      <div class="form-group">
+        <label for="lastname">First name</label>
+        <input type="text" class="form-control" id="lastname" name="lastname"
+               ng-model="registration.lastname" required="">
+      </div>
+      <div class="form-group">
+        <label for="company">Last name</label>
+        <input type="text" class="form-control" id="company" name="company"
+               ng-model="registration.company" required="">
+      </div>
+      <div class="form-group">
+        <label for="email">E-mail</label>
+        <input type="text" class="form-control" id="email" name="email"
+               ng-model="registration.email" required="">
+      </div>
+      <div class="form-group">
+        <label for="tax_id">Tax ID</label>
+        <input type="text" class="form-control" id="tax_id" name="tax_id"
+               ng-model="registration.tax_id" required="">
+      </div>
+      <div class="form-group">
+        <label for="phone">Phone</label>
+        <input type="text" class="form-control" id="phone" name="phone"
+               ng-model="registration.phone" required="">
+      </div>
+      <div class="form-group">
+        <label for="region">Region</label>
+        <input type="text" class="form-control" id="region" name="region"
+               ng-model="registration.region" required="">
+      </div>
+      <a href="{{registration.redirectUrl()}}" target="_blank" type="submit" class="btn btn-primary">
+        Submit registration
+      </a>
+    </form>
 
-    <label>{{fetch.status}}</label>
-    <pre>{{fetch.response | json}}</pre>
-    <button type="button" class="btn btn-primary" ng-click="startFetching()" ng-hide="fetch.in_progress">Fetch start</button>
-    <button type="button" class="btn btn-danger" ng-click="stopFetching()" ng-show="fetch.in_progress">Fetch  stop</button>
-  </form>
+    <h3>Payment</h3>
 
+    <form ng-submit="submitPayment()">
+      <label for="payment">Payment data</label>
+      <textarea class="form-control" id="payment" rows="15" ng-model="payment" required></textarea>
+      <button type="submit" class="btn btn-primary">Submit payment</button>
+    </form>
+
+    <h3>Fetch operation</h3>
+
+    <form>
+      <label for="next_id">NEXT_ID (optional)</label>
+      <input type="text" class="form-control" id="next_id" ng-model="fetch.next_id">
+
+      <label>{{fetch.status}}</label>
+      <pre>{{fetch.response | json}}</pre>
+      <button type="button" class="btn btn-primary" ng-click="startFetching()" ng-hide="fetch.in_progress">Fetch start
+      </button>
+      <button type="button" class="btn btn-danger" ng-click="stopFetching()" ng-show="fetch.in_progress">Fetch stop
+      </button>
+    </form>
+  </div>
 
 </div>
 <!-- /.container -->
@@ -117,6 +128,7 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/ramda/0.18.0/ramda.min.js"></script>
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js"></script>
 <script src="https://cdn.rawgit.com/grevory/angular-local-storage/master/dist/angular-local-storage.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/ramda/0.18.0/ramda.min.js"></script>
 <script src="/index.js"></script>
 
 </body>

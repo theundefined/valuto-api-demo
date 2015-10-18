@@ -1,32 +1,16 @@
 'use strict';
 
 angular.module('demo-app', ['LocalStorageModule'])
-  .controller('DemoAppCtrl', function($scope, $http, $q, localStorageService) {
+  .controller('DemoAppCtrl', function($scope, $http, $q, $parse, $window, localStorageService) {
 
-    $scope.store = localStorageService;
-
-    $scope.data = {
-      api_url: $scope.store.get('api_url') || 'https://api.valuto.com',
-      broker_id: $scope.store.get('broker_id') || '',
-      priv_key: $scope.store.get('priv_key') || null
+    $scope.resetAndReload = function() {
+      localStorageService.clearAll();
+      $window.location.reload();
     };
 
-    $scope.registration = {
-      url: $scope.store.get('registration_url') || 'https://valuto.com/pl/pl/registration-broker.html#/',
-      firstname: $scope.store.get('firstname') || 'Stefan',
-      lastname: $scope.store.get('lastname') || 'Tester',
-      company: $scope.store.get('company') || 'PHU Stefan Tester',
-      email: $scope.store.get('email') || 'tester+api1@c1.org.pl',
-      tax_id: $scope.store.get('tax_id') || '7792200000',
-      phone: $scope.store.get('phone') || '+48508620221',
-      region: $scope.store.get('region') || 'pl',
-      redirectUrl: function() {
-        return ['firstname', 'lastname', 'company', 'email', 'tax_id', 'phone', 'region'].reduce(
-          function(url, key) {
-            return url + '&' + key + '=' + encodeURIComponent($scope.registration[key])
-          }, $scope.registration.url + '?broker_id=' + $scope.data.broker_id);
-      }
-    };
+    bind('data.api_url', 'https://api.valuto.com');
+    bind('data.broker_id');
+    bind('data.priv_key');
 
     $scope.submitPing = function() {
       send('/api/ping')
@@ -36,7 +20,24 @@ angular.module('demo-app', ['LocalStorageModule'])
       send('/api', {method: 'POST', uri: '/verify', body: '{"test": "OK"}'});
     };
 
-    $scope.payment = $scope.store.get('payment') || JSON.stringify({
+    bind('showOperations', false);
+
+    bind('registration.url', 'https://valuto.com/pl/pl/registration-broker.html#/');
+    bind('registration.firstname', 'Stefan');
+    bind('registration.lastname', 'Tester');
+    bind('registration.company', 'PHU Stefan Tester');
+    bind('registration.email');
+    bind('registration.tax_id', '7792200000');
+    bind('registration.phone', '+48508620221');
+    bind('registration.region', 'pl');
+    $scope.registration.redirectUrl = function() {
+      return ['firstname', 'lastname', 'company', 'email', 'tax_id', 'phone', 'region'].reduce(
+        function(url, key) {
+          return url + '&' + key + '=' + encodeURIComponent($scope.registration[key])
+        }, $scope.registration.url + '?broker_id=' + $scope.data.broker_id);
+    };
+
+    bind('payment', JSON.stringify({
       "request_id": "1",
       "valuto_id": "WX20000043WX",
       "payment": {
@@ -49,18 +50,17 @@ angular.module('demo-app', ['LocalStorageModule'])
           "iban": "PL81723116442358135293889265"
         }
       }
-    }, undefined, '   ');
+    }, undefined, '   '));
 
     $scope.submitPayment = function() {
       send('/api', {method: 'POST', uri: '/payment', body: $scope.payment});
     };
 
+    bind('fetch.next_id', '');
     $scope.fetch = {
       status: '',
-      next_id: $scope.store.get('next_id') || '',
       response: [],
-      timeoutDefer: undefined,
-      timeout: /*Promise*/undefined,
+      timeoutDefer: $q.defer(),
       in_progress: false
     };
 
@@ -69,28 +69,24 @@ angular.module('demo-app', ['LocalStorageModule'])
       $scope.fetch.status = "Pending...";
       $scope.fetch.in_progress = true;
       $scope.fetch.timeoutDefer = $q.defer();
-      $scope.fetch.timeout = $scope.fetch.timeoutDefer.promise;
-      $scope.fetch.timeoutDefer.promise
-        .then(function() {
-          $scope.fetch.in_progress = false
-        });
       $scope.fetch.response = [];
       fetchData();
     };
 
     $scope.stopFetching = function() {
-      $scope.fetch.timeout && $scope.fetch.timeoutDefer.resolve();
+      $scope.fetch.in_progress = false;
+      $scope.fetch.timeoutDefer.resolve();
     };
 
     function fetchData() {
       send('/api', {
         method: 'GET',
         uri: '/fetch' + ( $scope.fetch.next_id ? '?last_id=' + $scope.fetch.next_id : '')
-      }, $scope.fetch.timeout)
-        .then(function(response) {
-          response.data.forEach(e =>
-            $scope.fetch.response.push(e));
-          $scope.fetch.next_id = response.data.pop().id;
+      }, $scope.fetch.timeoutDefer.promise)
+        .then(R.path(['data']))
+        .then(function(data) {
+          data.forEach(e => $scope.fetch.response.push(e));
+          $scope.fetch.next_id = R.path(['id'], R.last(data));
           $scope.store.set('next_id', $scope.fetch.next_id)
         })
         .finally(() => {
@@ -101,10 +97,7 @@ angular.module('demo-app', ['LocalStorageModule'])
 
     function send(url, data, timeoutPromise) {
       var promise = $http.post(url, R.merge($scope.data, data), {timeout: timeoutPromise || 4000});
-      if (!timeoutPromise)
-        return promise.then(popup, popup);
-      else
-        return promise;
+      if (!timeoutPromise) promise.then(popup, popup);
 
       function popup(response) {
         var text = angular.isString(response.data)
@@ -112,5 +105,9 @@ angular.module('demo-app', ['LocalStorageModule'])
           : JSON.stringify(response.data, undefined, '   ');
         alert(response.status + '\n' + text);
       }
+    }
+
+    function bind(key, def) {
+      return localStorageService.bind($scope, key, def);
     }
   });
