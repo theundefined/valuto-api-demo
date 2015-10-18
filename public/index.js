@@ -11,6 +11,23 @@ angular.module('demo-app', ['LocalStorageModule'])
       priv_key: $scope.store.get('priv_key') || null
     };
 
+    $scope.registration = {
+      url: $scope.store.get('registration_url') || 'https://valuto.com/pl/pl/registration-broker.html#/',
+      firstname: $scope.store.get('firstname') || 'Stefan',
+      lastname: $scope.store.get('lastname') || 'Tester',
+      company: $scope.store.get('company') || 'PHU Stefan Tester',
+      email: $scope.store.get('email') || 'tester+api1@c1.org.pl',
+      tax_id: $scope.store.get('tax_id') || '7792200000',
+      phone: $scope.store.get('phone') || '+48508620221',
+      region: $scope.store.get('region') || 'pl',
+      redirectUrl: function() {
+        return ['firstname', 'lastname', 'company', 'email', 'tax_id', 'phone', 'region'].reduce(
+          function(url, key) {
+            return url + '&' + key + '=' + encodeURIComponent($scope.registration[key])
+          }, $scope.registration.url + '?broker_id=' + $scope.data.broker_id);
+      }
+    };
+
     $scope.submitPing = function() {
       send('/api/ping')
     };
