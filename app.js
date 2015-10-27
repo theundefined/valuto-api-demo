@@ -9,7 +9,7 @@ const NodeRSA = require('node-rsa');
 const Q = require('q');
 
 const app = express();
-const requestq = Q.nfbind(request.defaults({timeout: 5000}));
+const requestq = Q.nfbind(request);
 const log = (log) => console.log(`${new Date().toISOString()} | ${log}`);
 
 app.use(express.static(__dirname + '/public'));

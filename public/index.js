@@ -60,7 +60,7 @@ angular.module('demo-app', ['LocalStorageModule'])
     $scope.fetch = {
       status: '',
       response: [],
-      timeoutDefer: $q.defer(),
+      timeoutDefer: undefined,
       in_progress: false
     };
 
@@ -71,33 +71,36 @@ angular.module('demo-app', ['LocalStorageModule'])
       $scope.fetch.timeoutDefer = $q.defer();
       $scope.fetch.response = [];
       fetchData();
+
+      function fetchData() {
+        send('/api', {
+          method: 'GET',
+          uri: '/fetch' + ( $scope.fetch.next_id ? '?last_id=' + $scope.fetch.next_id : '')
+        }, $scope.fetch.timeoutDefer.promise)
+          .then(R.path(['data']))
+          .then(function(data) {
+            if (data.length > 0) {
+              data.forEach(e => $scope.fetch.response.push(e));
+              $scope.fetch.next_id = R.path(['_id'], R.last(data));
+            }
+            $scope.fetch.status = 'Last check: ' + new Date().toISOString();
+            $scope.fetch.in_progress && fetchData();
+          }, function(err) {
+            $scope.stopFetching();
+          });
+      }
     };
 
     $scope.stopFetching = function() {
+      if (!$scope.fetch.in_progress) return;
       $scope.fetch.in_progress = false;
       $scope.fetch.timeoutDefer.resolve();
     };
 
-    function fetchData() {
-      send('/api', {
-        method: 'GET',
-        uri: '/fetch' + ( $scope.fetch.next_id ? '?last_id=' + $scope.fetch.next_id : '')
-      }, $scope.fetch.timeoutDefer.promise)
-        .then(R.path(['data']))
-        .then(function(data) {
-          data.forEach(e => $scope.fetch.response.push(e));
-          $scope.fetch.next_id = R.path(['id'], R.last(data));
-          $scope.store.set('next_id', $scope.fetch.next_id)
-        })
-        .finally(() => {
-          $scope.fetch.status = 'Last check: ' + new Date().toISOString();
-          $scope.fetch.in_progress && fetchData();
-        });
-    }
-
     function send(url, data, timeoutPromise) {
       var promise = $http.post(url, R.merge($scope.data, data), {timeout: timeoutPromise || 4000});
-      if (!timeoutPromise) promise.then(popup, popup);
+      if (!timeoutPromise) promise = promise.then(popup, popup);
+      return promise;
 
       function popup(response) {
         var text = angular.isString(response.data)
