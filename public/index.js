@@ -22,16 +22,19 @@ angular.module('demo-app', ['LocalStorageModule'])
 
     bind('showOperations', false);
 
-    bind('registration.url', 'https://valuto.com/pl/pl/registration-broker.html#/');
+    bind('registration.url', 'https://user.valuto.com/#/broker-registration');
     bind('registration.firstname', 'Stefan');
     bind('registration.lastname', 'Tester');
     bind('registration.company', 'PHU Stefan Tester');
     bind('registration.email');
     bind('registration.tax_id', '7792200000');
     bind('registration.phone', '+48508620221');
+    bind('registration.street', 'Testing Str. 1234');
+    bind('registration.postal_code', '61-123');
+    bind('registration.city', 'Poznań');
     bind('registration.region', 'pl');
     $scope.registration.redirectUrl = function() {
-      return ['firstname', 'lastname', 'company', 'email', 'tax_id', 'phone', 'region'].reduce(
+      return ['firstname', 'lastname', 'company', 'email', 'tax_id', 'phone', 'street', 'postal_code', 'city', 'region'].reduce(
         function(url, key) {
           return url + '&' + key + '=' + encodeURIComponent($scope.registration[key])
         }, $scope.registration.url + '?broker_id=' + $scope.data.broker_id);
@@ -46,7 +49,7 @@ angular.module('demo-app', ['LocalStorageModule'])
         "recipient": {
           "type": "IBAN",
           "name": "Some Company",
-          "address": "Address Str. 1234",
+          "address": "Address Str. 1234, CityName",
           "iban": "PL81723116442358135293889265"
         }
       }
