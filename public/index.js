@@ -25,7 +25,7 @@ angular.module('demo-app', ['LocalStorageModule'])
     bind('registration.url', 'https://user.valuto.com/#/broker-registration');
     bind('registration.firstname', 'Stefan');
     bind('registration.lastname', 'Tester');
-    bind('registration.company', 'PHU Stefan Tester');
+    bind('registration.company_name', 'PHU Stefan Tester');
     bind('registration.email');
     bind('registration.tax_id', '7792200000');
     bind('registration.phone', '+48508620221');
@@ -34,7 +34,8 @@ angular.module('demo-app', ['LocalStorageModule'])
     bind('registration.city', 'Poznań');
     bind('registration.region', 'pl');
     $scope.registration.redirectUrl = function() {
-      return ['firstname', 'lastname', 'company', 'email', 'tax_id', 'phone', 'street', 'postal_code', 'city', 'region'].reduce(
+      return ['firstname', 'lastname', 'company_name', 'email', 'tax_id', 'phone', 'street', 'postal_code', 'city',
+        'region'].reduce(
         function(url, key) {
           return url + '&' + key + '=' + encodeURIComponent($scope.registration[key])
         }, $scope.registration.url + '?broker_id=' + $scope.data.broker_id);
