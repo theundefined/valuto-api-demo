@@ -47,14 +47,14 @@ angular.module('demo-app', ['LocalStorageModule'])
       "payment": {
         "amount": "100.00 PLN",
         "title": "some title",
-        "recipient": {
+        "destination": {
           "type": "IBAN",
-          "name": "Some Company",
-          "address": "Address Str. 1234, CityName",
+          "owner_name": "Some Company",
+          "owner_address": "Address Str. 1234, CityName",
           "iban": "PL81723116442358135293889265"
         }
       }
-    }, undefined, '   '));
+    }, undefined, 3/* 3 spaces indent */));
 
     $scope.submitPayment = function() {
       send('/api', {method: 'POST', uri: '/payment', body: $scope.payment});
