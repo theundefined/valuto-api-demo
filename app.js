@@ -36,7 +36,7 @@ app.post('/api/', (req, res) => {
     headers: {
       'Content-Type': 'application/json',
       'x-valuto-sign': signature,
-      'x-valuto-broker-id': req.body.broker_id
+      'x-valuto-api-id': req.body.api_id
     }
   })
     .spread((result, body) => res.status(result.statusCode).send(body))

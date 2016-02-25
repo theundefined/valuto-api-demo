@@ -9,20 +9,20 @@ angular.module('demo-app', ['LocalStorageModule'])
     };
 
     bind('data.api_url', 'https://api.valuto.com');
-    bind('data.broker_id');
+    bind('data.api_id');
     bind('data.priv_key');
 
     $scope.submitPing = function() {
-      send('/api/ping')
+      send('/api/ping');
     };
 
     $scope.submitVerify = function() {
-      send('/api', {method: 'POST', uri: '/verify', body: '{"test": "OK"}'});
+      send('/api', {method: 'POST', uri: '/v1/verify', body: '{"test": "OK"}'});
     };
 
     bind('showOperations', false);
 
-    bind('registration.url', 'https://user.valuto.com/#/broker-registration');
+    bind('registration.url', 'https://user.valuto.com/#/api-registration');
     bind('registration.firstname', 'Stefan');
     bind('registration.lastname', 'Tester');
     bind('registration.company_name', 'PHU Stefan Tester');
@@ -38,13 +38,13 @@ angular.module('demo-app', ['LocalStorageModule'])
         'region'].reduce(
         function(url, key) {
           return url + '&' + key + '=' + encodeURIComponent($scope.registration[key])
-        }, $scope.registration.url + '?broker_id=' + $scope.data.broker_id);
+        }, $scope.registration.url + '?api_id=' + $scope.data.api_id);
     };
 
     bind('payment', JSON.stringify({
       "request_id": "1",
       "valuto_id": "WX20000043WX",
-      "payment": {
+      "payout": {
         "amount": "100.00 PLN",
         "title": "some title",
         "destination": {
@@ -57,10 +57,10 @@ angular.module('demo-app', ['LocalStorageModule'])
     }, undefined, 3/* 3 spaces indent */));
 
     $scope.submitPayment = function() {
-      send('/api', {method: 'POST', uri: '/payment', body: $scope.payment});
+      send('/api', {method: 'POST', uri: '/v1/payout/prepare', body: $scope.payment});
     };
 
-    bind('fetch.next_id', '');
+    bind('fetch.next_oid', '');
     $scope.fetch = {
       status: '',
       response: [],
@@ -79,13 +79,13 @@ angular.module('demo-app', ['LocalStorageModule'])
       function fetchData() {
         send('/api', {
           method: 'GET',
-          uri: '/fetch' + ( $scope.fetch.next_id ? '?last_id=' + $scope.fetch.next_id : '')
+          uri: '/v1/events' + ( $scope.fetch.next_oid ? '?last_oid=' + $scope.fetch.next_oid : '')
         }, $scope.fetch.timeoutDefer.promise)
           .then(R.path(['data']))
           .then(function(data) {
             if (data.length > 0) {
               data.forEach(e => $scope.fetch.response.push(e));
-              $scope.fetch.next_id = R.path(['_id'], R.last(data));
+              $scope.fetch.next_oid = R.path(['ordinal_id'], R.last(data));
             }
             $scope.fetch.status = 'Last check: ' + new Date().toISOString();
             $scope.fetch.in_progress && fetchData();
