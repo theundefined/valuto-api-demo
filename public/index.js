@@ -13,7 +13,7 @@ angular.module('demo-app', ['LocalStorageModule'])
     bind('data.priv_key');
 
     $scope.submitPing = function() {
-      send('/api/ping');
+      send('/api/v1/ping');
     };
 
     $scope.submitVerify = function() {
