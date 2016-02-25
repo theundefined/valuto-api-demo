@@ -14,8 +14,8 @@ const log = (log) => console.log(`${new Date().toISOString()} | ${log}`);
 
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.json());
-app.post('/api/ping', (req, res) => {
-  requestq({method: 'GET', baseUrl: req.body.api_url, uri: '/ping'})
+app.post('/api/v1/ping', (req, res) => {
+  requestq({method: 'GET', baseUrl: req.body.api_url, uri: '/v1/ping'})
     .spread((result, body) => res.status(result.statusCode).send(body))
     .catch(err => res.status(500).send(err));
 });
