@@ -33,8 +33,9 @@ angular.module('demo-app', ['LocalStorageModule'])
     bind('registration.postal_code', '61-123');
     bind('registration.city', 'Poznań');
     bind('registration.region', 'pl');
+    bind('registration.correlation_id', Math.floor((Math.random() * 1000) + 1));
     $scope.registration.redirectUrl = function() {
-      return ['firstname', 'lastname', 'company_name', 'email', 'tax_id', 'phone', 'street', 'postal_code', 'city',
+      return ['correlation_id', 'firstname', 'lastname', 'company_name', 'email', 'tax_id', 'phone', 'street', 'postal_code', 'city',
         'region'].reduce(
         function(url, key) {
           return url + '&' + key + '=' + encodeURIComponent($scope.registration[key])
